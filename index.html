@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="pt-BR" data-mode="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>SERIESVERSE AI</title>
+  <meta name="theme-color" content="#0d0c10">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="skip" href="#view">Pular para o conteúdo</a>
+  <header class="topbar" id="topbar"></header>
+  <main id="view" tabindex="-1" aria-live="polite"><div class="skel" style="min-height:160px"></div></main>
+  <nav class="tabbar" id="tabbar" aria-label="Navegação principal"></nav>
+  <footer class="foot" id="foot">
+    <p>Dados de séries fornecidos pelo TMDB quando configurado. Este produto usa a API do TMDB, mas não é endossado nem certificado pelo TMDB. Plataformas: JustWatch via TMDB.</p>
+    <p>As análises são originais e não substituem a obra: assista aos episódios em plataformas legais.</p>
+  </footer>
+  <div id="toasts" class="toasts" role="status" aria-live="polite"></div>
+  <div id="overlay" class="overlay" hidden><div class="overlay-card"><div class="spinner" aria-hidden="true"></div><p id="overlay-text">Carregando…</p></div></div>
+  <script type="module" src="app-entry.js"></script>
+</body>
+</html>
