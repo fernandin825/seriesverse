@@ -19,7 +19,8 @@ jobs:
         with:
           distribution: temurin
           java-version: 21
-      - uses: android-actions/setup-android@v3
+      - name: Aceitar licencas do Android
+        run: yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
       - name: Instalar dependencias
         run: npm install
       - name: Criar projeto Android
