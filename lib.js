@@ -61,10 +61,10 @@ export const icon = (n) => `<svg class="i" viewBox="0 0 24 24" aria-hidden="true
 
 // ---------- tema por série ----------
 const BY_TITLE = {
-  'the mentalist': { h: 28, s: 38, h2: 356, motif: 'board', label: 'Investigação criminal', tagline: 'Observar. Levantar hipóteses. Verificar.' },
-  'breaking bad': { h: 120, s: 40, h2: 52, motif: 'lab', label: 'Laboratório e deserto', tagline: 'Escolhas e consequências.' },
+  'the mentalist': { h: 350, s: 62, h2: 43, a: 58, motif: 'board', label: 'Investigação criminal', tagline: 'Observar. Levantar hipóteses. Verificar.' },
+  'breaking bad': { h: 140, s: 46, h2: 52, a: 85, motif: 'lab', label: 'Laboratório e deserto', tagline: 'Escolhas e consequências.' },
   friends: { h: 280, s: 55, h2: 32, motif: 'warm', label: 'Sitcom acolhedora', tagline: 'Amizade, rotina e boas risadas.', mode: 'light' },
-  dark: { h: 215, s: 40, h2: 28, motif: 'scifi', label: 'Tempo e mistério', tagline: 'O fim é o começo.' },
+  dark: { h: 215, s: 46, h2: 36, a: 72, motif: 'scifi', label: 'Tempo e mistério', tagline: 'O fim é o começo.' },
   'stranger things': { h: 355, s: 70, h2: 12, motif: 'horror', label: 'Suspense sobrenatural', tagline: 'Algo está errado.' },
   'game of thrones': { h: 40, s: 38, h2: 210, motif: 'epic', label: 'Fantasia épica', tagline: 'Casas, alianças e jogos de poder.' },
 };
@@ -91,7 +91,7 @@ export function themeFor(series) {
 }
 export function applyTheme(t, prefs) {
   const r = document.documentElement;
-  r.style.setProperty('--h', t.h); r.style.setProperty('--s', t.s); r.style.setProperty('--h2', t.h2);
+  r.style.setProperty('--h', t.h); r.style.setProperty('--s', t.s); r.style.setProperty('--h2', t.h2); r.style.setProperty('--a', t.a ?? 82);
   r.dataset.motif = t.motif || 'none';
   r.dataset.mode = prefs?.theme === 'light' ? 'light' : 'dark';
   r.dataset.motion = prefs?.reduceMotion ? 'off' : 'on';
