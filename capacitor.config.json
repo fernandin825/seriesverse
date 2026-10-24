@@ -1,0 +1,7 @@
+{
+  "appId": "com.seriesverse.ai",
+  "appName": "SERIESVERSE AI",
+  "webDir": "www",
+  "backgroundColor": "#0b0d14",
+  "android": { "allowMixedContent": false }
+}
