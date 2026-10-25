@@ -21,7 +21,7 @@ Mesmo app que você já viu, agora rodando **dentro do celular**, sem servidor. 
 - Abra o app > **Carregar demonstração** para testar.
 - Para pesquisar séries reais: **Ajustes > Chaves de acesso**.
   - **TMDB** (grátis): crie conta em themoviedb.org > Configurações > API > copie o *Token de Leitura da API* e cole.
-  - **IA (Anthropic)**: chave em console.anthropic.com (uso pago por consumo). Habilita relatórios de qualquer série, correção de respostas abertas e chat.
+  - **IA (Gemini, gratuita)**: entre em **aistudio.google.com/apikey** com sua conta Google, clique em **Criar chave de API** e copie a chave (começa com `AIza`). Cole em *Chave do Gemini*. Habilita relatórios de qualquer série, correção de respostas abertas e chat. O plano gratuito tem limite de uso por minuto/dia: se aparecer “limite atingido”, espere um pouco. Se aparecer erro de modelo, mude o nome em *Modelo do Gemini* (o app já tenta alternativas sozinho).
 - As chaves ficam só no celular (e quem abrir o APK/aparelho desbloqueado pode ver). Não compartilhe o APK com outras pessoas.
 
 ## O que funciona sem internet
@@ -34,7 +34,7 @@ Mesmo app que você já viu, agora rodando **dentro do celular**, sem servidor. 
 | Catálogo local (4 séries) e cadastro manual | ✅ |
 | Relatório offline do Piloto de The Mentalist (limitado) | ✅ |
 | Pesquisar séries novas, pôsteres, plataformas | ❌ precisa de internet + chave TMDB |
-| Gerar relatório novo, corrigir respostas abertas com IA, chat livre | ❌ precisa de internet + chave da IA |
+| Gerar relatório novo, corrigir respostas abertas com IA, chat livre | ❌ precisa de internet + chave do Gemini |
 
 ## Seus dados
 Ficam no armazenamento do app. **Desinstalar ou “limpar dados” apaga o progresso.** Use *Ajustes > Exportar meus dados* para guardar cópia. Atualizar o app (instalar um APK novo por cima) mantém os dados — desde que seja assinado com a mesma chave (o GitHub gera uma chave de debug nova a cada build; se o Android recusar a atualização, exporte os dados, desinstale e instale de novo).
@@ -47,5 +47,5 @@ Precisa do **Node.js 22.13 ou mais novo** (nodejs.org). Extraia, abra o terminal
 
 ## Limitações honestas
 - O APK **não foi compilado no ambiente onde o projeto foi criado** (sem Android SDK e sem acesso aos repositórios do Google). O motor do app foi testado em navegador com TMDB e IA simulados; o workflow de build é a receita padrão do Capacitor, mas **não foi executado**. Se o passo de build falhar, copie a mensagem de erro do Actions e me envie.
-- TMDB e IA reais não foram testados com suas chaves.
+- TMDB e Gemini reais não foram testados com suas chaves (testei só com simulação). Os nomes dos modelos do Gemini vieram de fontes secundárias e podem mudar.
 - É um APK de *debug* (instalável, mas não otimizado/assinado para loja).

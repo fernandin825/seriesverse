@@ -5,11 +5,11 @@ import { computePlan, normalizePrefs } from './core-lib/schedule.js';
 import { publicQuiz, gradeChoice, gradeLocal, isChoice, correctLabel } from './core-lib/quiz.js';
 import { curatedFor } from './core-lib/curated.js';
 import { norm, dayStr } from './core-lib/util.js';
-import { AI } from './core-lib/ai.js';
+import { AI, DEFAULT_MODEL } from './core-lib/ai.js';
 import { REPORT_SYSTEM, reportPrompt, validateReport } from './core-lib/reports.js';
 
 const realFetch = window.fetch.bind(window);
-const fresh = () => ({ prefs: { theme: 'dark', spoilerMode: 'restricted', fontScale: 1, reduceMotion: false, onboarded: false }, keys: { tmdb: '', ai: '', model: 'claude-sonnet-5-5' }, series: {}, eps: {}, lib: {}, prog: {}, rep: {}, att: {}, ch: {}, fav: {}, act: [], chat: {}, cache: {} });
+const fresh = () => ({ prefs: { theme: 'dark', spoilerMode: 'restricted', fontScale: 1, reduceMotion: false, onboarded: false, glass: 60, touchFx: true }, keys: { tmdb: '', ai: '', model: DEFAULT_MODEL }, series: {}, eps: {}, lib: {}, prog: {}, rep: {}, att: {}, ch: {}, fav: {}, act: [], chat: {}, cache: {} });
 let S = fresh();
 
 // ---------- persistência (IndexedDB) ----------
@@ -20,6 +20,10 @@ export async function initEngine() {
     idb = await openIdb();
     const raw = await new Promise((res) => { const q = idb.transaction('kv').objectStore('kv').get('state'); q.onsuccess = () => res(q.result); q.onerror = () => res(null); });
     if (raw) S = { ...fresh(), ...JSON.parse(raw) };
+    S.prefs = { ...fresh().prefs, ...S.prefs }; // preferências novas ganham valor padrão sem apagar as antigas
+    // migração: versões antigas usavam IA da Anthropic; agora é Gemini (gratuito)
+    if (!S.keys.model || /^claude/i.test(S.keys.model)) S.keys.model = DEFAULT_MODEL;
+    if (/^sk-ant/i.test(S.keys.ai || '')) S.keys.ai = '';
   } catch (e) { console.warn('IndexedDB indisponível; usando só a memória.', e); }
   try { await navigator.storage?.persist?.(); } catch {}
   addEventListener('pagehide', flush); document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') flush(); });
@@ -40,7 +44,7 @@ class E extends Error { constructor(s, m, c) { super(m); this.s = s; this.c = c;
 const k = (s, e) => `${s}:${e}`;
 const D = decodeURIComponent;
 const aiOn = () => !!S.keys.ai.trim();
-const ai = () => new AI({ ANTHROPIC_API_KEY: S.keys.ai.trim(), AI_MODEL: S.keys.model || 'claude-sonnet-5-5' }, realFetch);
+const ai = () => new AI({ GEMINI_API_KEY: S.keys.ai.trim(), AI_MODEL: S.keys.model || DEFAULT_MODEL }, realFetch);
 const wrapAi = async (fn) => { try { return await fn(); } catch (e) { if (e instanceof E) throw e; throw new E(502, e.message || 'Falha na IA.', e.code || 'ai_unavailable'); } };
 
 // ---------- catálogo ----------
@@ -150,7 +154,7 @@ async function ensureReport(id, s, e, notes = '', force = false) {
   }
   if (cur) return useCurated();
   if (notes) { S.rep[key] = fromNotes(x, ep, notes); save(); return { report: S.rep[key], state: 'ready' }; }
-  return { report: insufficient(x, ep, 'Configure a chave da IA em Ajustes ou descreva o episódio. Não vou inventar acontecimentos.'), state: 'insufficient' };
+  return { report: insufficient(x, ep, 'Cole sua chave do Gemini (gratuita) em Ajustes ou descreva o episódio. Não vou inventar acontecimentos.'), state: 'insufficient' };
 }
 const quizSummary = (id, s, e, quiz) => { const a = Object.values(S.att[k(id, k(s, e))] || {}); const g = quiz.filter((q) => q.type !== 'reflect').length; const earned = a.reduce((t, r) => t + (r.score || 0), 0); return { total: quiz.length, graded: g, answered: a.length, earned, max: g, percent: g ? Math.round((earned / g) * 100) : null, finished: a.length >= quiz.length && quiz.length > 0, perfect: g > 0 && earned === g && a.length >= quiz.length }; };
 const attView = (a, q) => ({ qid: a.qid, answer: a.answer, score: a.score, verdict: a.verdict, feedback: a.feedback, correct: correctLabel(q), explanation: q.explanation || '', model_answer: q.model_answer || null });
@@ -163,7 +167,7 @@ on('GET', '/api/health', () => ({ ok: true, providers: providers(), persistence:
 on('GET', '/api/me', () => ({ prefs: S.prefs, library_count: Object.keys(S.lib).length, providers: providers(), today: today() }));
 on('GET', '/api/keys', () => ({ tmdb: !!S.keys.tmdb.trim(), ai: aiOn(), model: S.keys.model }));
 on('PUT', '/api/keys', ({ b }) => { if (typeof b.tmdb === 'string') S.keys.tmdb = b.tmdb.trim().slice(0, 400); if (typeof b.ai === 'string') S.keys.ai = b.ai.trim().slice(0, 400); if (typeof b.model === 'string' && b.model.trim()) S.keys.model = b.model.trim().slice(0, 80); save(); return { tmdb: !!S.keys.tmdb, ai: aiOn(), model: S.keys.model }; });
-on('PUT', '/api/settings', ({ b }) => { for (const key of Object.keys(S.prefs)) if (key in b) S.prefs[key] = key === 'fontScale' ? Math.min(1.4, Math.max(0.85, Number(b[key]) || 1)) : b[key]; save(); return { prefs: S.prefs }; });
+on('PUT', '/api/settings', ({ b }) => { for (const key of Object.keys(S.prefs)) if (key in b) S.prefs[key] = key === 'fontScale' ? Math.min(1.4, Math.max(0.85, Number(b[key]) || 1)) : key === 'glass' ? Math.min(100, Math.max(0, Number(b[key]) || 0)) : b[key]; save(); return { prefs: S.prefs }; });
 on('GET', '/api/trending', async () => {
   const seeds = SEED.filter((x) => x.popular).map((x) => ({ id: x.id, provider: 'seed', title_original: x.title_original, title_pt: x.title_pt, year: x.year, genres: x.genres, poster: null, local: true }));
   if (!S.keys.tmdb.trim()) return { results: seeds, provider: 'local', notices: [] };
@@ -266,8 +270,8 @@ on('POST', '/api/series/:id/chat', async ({ p, b }) => {
   } else if (/desafio/i.test(m)) { reply = latest?.challenge?.text ? 'Desafio ligado ao seu último relatório:' : 'Desafio geral de observação e comunicação:'; cards.push({ title: 'Desafio prático', body: latest?.challenge?.text || GENERIC[Math.floor(Math.random() * GENERIC.length)] }); }
   else if (/(aplic|vida real|li[cç][aã]o)/i.test(m)) { const ls = latest?.lessons || []; if (!ls.length) reply = 'Ainda não há aprendizagens registradas para esta série.'; else { reply = `Aprendizagens do relatório mais recente (T${latest.identification.season}E${latest.identification.episode}):`; for (const l of ls) cards.push({ title: l.lesson, body: `No episódio: ${l.episode_link}\nNa vida real: ${l.real_life.situation}\nExperimente: ${l.real_life.action}\nCuidado: ${l.real_life.caution}` }); } }
   else if (NOSP.test(m)) reply = `Combinado: só considero o que você já concluiu (até T${lim.season}E${lim.episode}).`;
-  else if (wants) reply = 'Sem IA configurada não consigo informar acontecimentos futuros com confiabilidade — e prefiro não inventar. Cole sua chave da IA em Ajustes.';
-  else reply = 'Modo offline (sem chave de IA): posso revisar perguntas que você errou, propor um desafio e relembrar lições. Para conversas livres, cole sua chave da IA em Ajustes.';
+  else if (wants) reply = 'Sem IA configurada não consigo informar acontecimentos futuros com confiabilidade — e prefiro não inventar. Cole sua chave do Gemini em Ajustes.';
+  else reply = 'Modo offline (sem chave de IA): posso revisar perguntas que você errou, propor um desafio e relembrar lições. Para conversas livres, cole sua chave do Gemini (gratuita) em Ajustes.';
   h.push({ role: 'assistant', content: reply, at: new Date().toISOString() }); if (h.length > 200) h.splice(0, 100); log('chat', id); save(); return { reply, cards, actions, limit: lim };
 });
 

@@ -1,4 +1,4 @@
-import { $, $$, esc, enc, get, post, put, del, icon, poster, bar, fmtDate, WD, WDLONG, epLabel, themeFor, placeholderPoster } from './lib.js';
+import { $, $$, esc, enc, get, post, put, del, icon, poster, bar, fmtDate, WD, WDLONG, epLabel, themeFor, placeholderPoster, brandLockup } from './lib.js';
 import { state, route, action, after, go, toast, overlay, setTheme } from './core.js';
 
 export const name = (s) => s.title_pt || s.title_original;
@@ -15,7 +15,7 @@ const libCard = (st) => {
 
 // ---------- onboarding ----------
 export const onboardingView = () => `<section class="hero" aria-labelledby="ob"><div class="hero-bg" style="background:radial-gradient(circle at 70% 20%, hsl(var(--h2) 80% 55% / .5), transparent 55%)"></div>
-  <div class="kicker">Bem-vindo</div><h1 id="ob">Assista. Compreenda. Aprenda.</h1>
+  ${brandLockup()}<div class="kicker">Bem-vindo</div><h1 id="ob">Assista. Compreenda. Aprenda.</h1>
   <p style="max-width:620px;font-size:1.1rem">O SERIESVERSE AI acompanha seu progresso em qualquer série, calcula seu ritmo e, quando você termina um episódio, entrega uma análise original com lições aplicáveis à vida real — sem spoilers do que você ainda não viu.</p></section>
   <div class="grid g3" style="margin-top:20px">
     <div class="card"><h3>${icon('search')} 1. Escolha a série</h3><p class="muted">Pesquise no catálogo ou cadastre manualmente qualquer título.</p></div>
@@ -46,7 +46,7 @@ route('/', async () => {
   const cont = lastW?.progress.next ? `#/s/${enc(lastW.series.id)}/ep/${lastW.progress.next.season}/${lastW.progress.next.episode}` : null;
   return `<section class="hero" aria-labelledby="h1">
       <div class="hero-bg" ${bg ? `style="background-image:url('${esc(bg)}')"` : 'style="background:radial-gradient(circle at 75% 15%, hsl(var(--h2) 80% 55% / .45), transparent 55%)"'}></div>
-      <div class="kicker">SERIESVERSE AI</div>
+      ${brandLockup()}
       <h1 id="h1">Qual série você deseja acompanhar?</h1>
       <p class="muted" style="max-width:600px">Pesquise qualquer série, informe seu ritmo e aprenda com cada episódio — sem spoilers.</p>
       <form class="searchbar" data-form="do-search" role="search"><label class="hide" for="q">Qual série você está assistindo?</label>

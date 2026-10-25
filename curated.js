@@ -6,7 +6,7 @@ import { norm } from './util.js';
 const MENTALIST_PILOT = {
   limited: true,
   limitation_note:
-    'Relatório limitado: usa apenas elementos estruturais do episódio piloto (premissa, personagens apresentados e abordagem de investigação). Os detalhes do caso específico não foram verificados offline e, por isso, não são descritos. Ative a IA (ANTHROPIC_API_KEY) ou registre sua própria descrição do episódio para uma análise mais completa.',
+    'Relatório limitado: usa apenas elementos estruturais do episódio piloto (premissa, personagens apresentados e abordagem de investigação). Os detalhes do caso específico não foram verificados offline e, por isso, não são descritos. Cole sua chave do Gemini (gratuita) em Ajustes ou registre sua própria descrição do episódio para uma análise mais completa.',
   summary: [
     {
       heading: 'Como o episódio apresenta a série',

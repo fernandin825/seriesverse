@@ -59,6 +59,12 @@ const P = {
 };
 export const icon = (n) => `<svg class="i" viewBox="0 0 24 24" aria-hidden="true">${P[n] || ''}</svg>`;
 
+
+// ---------- marca SERIESVERSE AI (arquivos extraídos da imagem de referência oficial) ----------
+export const logoMark = (px = 34) => `<img class="logomark" src="logo-mark.png" alt="" height="${px}" decoding="async">`;
+export const wordmark = () => '<img class="logoword" src="logo-word.png" alt="SERIESVERSE AI" decoding="async">';
+export const brandLockup = () => `<div class="lockup"><img class="lockup-mark" src="logo-mark.png" alt="" decoding="async"><img class="lockup-text" src="logo-text.png" alt="SERIESVERSE AI — Séries, Aprendizado, Evolução" decoding="async"></div>`;
+
 // ---------- tema por série ----------
 const BY_TITLE = {
   'the mentalist': { h: 350, s: 62, h2: 43, a: 58, motif: 'board', label: 'Investigação criminal', tagline: 'Observar. Levantar hipóteses. Verificar.' },
@@ -78,7 +84,7 @@ const BY_GENRE = [
   [/drama/i, { h: 225, s: 38, h2: 25, motif: 'drama', label: 'Drama' }],
 ];
 const norm = (s) => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
-export const BRAND = { h: 255, s: 42, h2: 35, motif: 'none', label: 'SERIESVERSE', tagline: '' };
+export const BRAND = { h: 220, s: 100, h2: 212, a: 92, motif: 'none', label: 'SERIESVERSE', tagline: '' };
 export function themeFor(series) {
   if (!series) return BRAND;
   const byTitle = BY_TITLE[norm(series.title_original)];
@@ -96,6 +102,7 @@ export function applyTheme(t, prefs) {
   r.dataset.mode = prefs?.theme === 'light' ? 'light' : 'dark';
   r.dataset.motion = prefs?.reduceMotion ? 'off' : 'on';
   r.style.setProperty('--fs', prefs?.fontScale || 1);
+  r.style.setProperty('--gk', (0.2 + (prefs?.glass ?? 60) / 75).toFixed(2)); // 0 = vidro bem transparente · 100 = vidro fosco
 }
 
 // ---------- pôsteres ----------

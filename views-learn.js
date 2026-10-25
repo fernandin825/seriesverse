@@ -166,19 +166,33 @@ route('/settings', async () => {
   return `<h1>Ajustes</h1><section class="card stack"><h2>Aparência e acessibilidade</h2>
   <div class="row"><button class="btn" data-act="toggle-theme">${icon('sun')} Alternar claro/escuro</button></div>
   <div class="field"><label for="fsz">Tamanho do texto: <span id="fszv">${Math.round(p.fontScale * 100)}%</span></label><input id="fsz" type="range" min="0.85" max="1.4" step="0.05" value="${p.fontScale}" data-change="set-font"></div>
-  <label style="font-weight:400"><input type="checkbox" ${p.reduceMotion ? 'checked' : ''} data-change="set-motion" style="width:auto;min-height:0"> Reduzir animações</label></section>
+  <label class="switch-row"><span>Reduzir animações</span><input type="checkbox" ${p.reduceMotion ? 'checked' : ''} data-change="set-motion" role="switch"></label></section>
+  <section class="card stack" style="margin-top:16px"><h2>${icon('sun')} Liquid Glass</h2>
+  <div class="field"><label for="glass">Transparência do vidro: <span id="glassv">${glassLabel(p.glass ?? 60)}</span></label>
+  <input id="glass" type="range" min="0" max="100" step="1" value="${p.glass ?? 60}" data-change="set-glass" aria-describedby="glasshint">
+  <div class="range-ends small muted"><span>Mais transparente</span><span>Mais fosco</span></div></div>
+  <div class="seg" role="group" aria-label="Atalhos de transparência"><button class="btn sm" type="button" data-act="glass-preset" data-v="10">Transparente</button><button class="btn sm" type="button" data-act="glass-preset" data-v="60">Equilibrado</button><button class="btn sm" type="button" data-act="glass-preset" data-v="95">Fosco</button></div>
+  <p id="glasshint" class="small muted">Dica: se o texto ficar difícil de ler sobre um fundo claro, aumente a opacidade (mais fosco).</p>
+  <label class="switch-row"><span>Brilho e vibração ao tocar</span><input type="checkbox" ${p.touchFx !== false ? 'checked' : ''} data-change="set-touchfx" role="switch"></label></section>
   <section class="card stack" style="margin-top:16px"><h2>${icon('lock')} Anti-spoiler</h2><div class="field"><label for="sm">Modo de spoilers</label><select id="sm" data-change="set-spoiler" style="max-width:360px"><option value="restricted" ${p.spoilerMode !== 'normal' ? 'selected' : ''}>Restrito (oculta títulos e sinopses futuros)</option><option value="normal" ${p.spoilerMode === 'normal' ? 'selected' : ''}>Normal (mostra títulos; sinopses seguem ocultas)</option></select></div></section>
   <section class="card stack" style="margin-top:16px"><h2>${icon('lock')} Chaves de acesso (ficam só neste celular)</h2>
   <p>Catálogo TMDB: <b>${h.providers.tmdb ? 'ativo' : 'não configurado'}</b> · IA: <b>${h.providers.ai ? 'ativa' : 'não configurada'}</b> · Dados: ${esc(h.persistence)}</p>
   <form class="stack" data-form="save-keys" autocomplete="off">
   <div class="field"><label for="kt">Chave do TMDB (Read Access Token ou API Key)</label><input id="kt" name="tmdb" type="password" placeholder="${h.providers.tmdb ? '•••• já salva — deixe em branco para manter' : 'Cole aqui para pesquisar milhares de séries'}"></div>
-  <div class="field"><label for="ka">Chave da IA (Anthropic)</label><input id="ka" name="ai" type="password" placeholder="${h.providers.ai ? '•••• já salva — deixe em branco para manter' : 'Cole aqui para relatórios, correção e chat'}"></div>
-  <div class="field"><label for="km">Modelo da IA</label><input id="km" name="model" value="${esc(keys.model || 'claude-sonnet-5-5')}"></div>
+  <div class="field"><label for="ka">Chave do Gemini (IA gratuita do Google)</label><input id="ka" name="ai" type="password" placeholder="${h.providers.ai ? '•••• já salva — deixe em branco para manter' : 'Cole aqui para relatórios, correção e chat'}"></div>
+  <div class="field"><label for="km">Modelo do Gemini (só mude se der erro de modelo)</label><input id="km" name="model" value="${esc(keys.model || 'gemini-3.8-flash')}"></div>
   <div class="row"><button class="btn primary" type="submit">Salvar chaves</button><button class="btn" type="button" data-act="clear-keys">Apagar chaves</button></div></form>
   <p class="small muted">Sem chaves o app funciona offline com o catálogo local e o que você já registrou. As chaves ficam guardadas apenas neste aparelho e não entram no “Exportar meus dados”. Quem tiver acesso ao seu celular desbloqueado pode vê-las — use só para uso pessoal.</p></section>
   <section class="card stack" style="margin-top:16px"><h2>Seus dados</h2><div class="row"><button class="btn" data-act="export-data">${icon('download')} Exportar meus dados</button><button class="btn danger" data-act="delete-all">${icon('trash')} Excluir todos os meus dados</button></div></section>`;
 });
+const glassLabel = (v) => (v < 25 ? 'bem transparente' : v < 50 ? 'transparente' : v < 75 ? 'equilibrado' : 'fosco');
+const setGlassVar = (v) => document.documentElement.style.setProperty('--gk', (0.2 + v / 75).toFixed(2));
+// ajuste ao vivo enquanto arrasta (sem esperar soltar o dedo)
+document.addEventListener('input', (e) => { if (e.target.id !== 'glass') return; const v = Number(e.target.value); setGlassVar(v); const l = $('#glassv'); if (l) l.textContent = glassLabel(v); });
 const savePref = async (patch) => { Object.assign(state.prefs, patch); try { await put('/api/settings', patch); } catch (e) { toast(e.message, 'error'); } };
+action('set-glass', (el) => { const v = Number(el.value); setGlassVar(v); savePref({ glass: v }); });
+action('glass-preset', (el) => { const v = Number(el.dataset.v); const r = $('#glass'); if (r) { r.value = v; r.dispatchEvent(new Event('input', { bubbles: true })); } setGlassVar(v); const l = $('#glassv'); if (l) l.textContent = glassLabel(v); savePref({ glass: v }); });
+action('set-touchfx', (el) => { savePref({ touchFx: el.checked }); toast(el.checked ? 'Brilho e vibração ligados.' : 'Brilho e vibração desligados.', 'ok'); });
 action('set-font', (el) => { document.documentElement.style.setProperty('--fs', el.value); $('#fszv').textContent = Math.round(el.value * 100) + '%'; savePref({ fontScale: Number(el.value) }); });
 action('set-motion', (el) => { document.documentElement.dataset.motion = el.checked ? 'off' : 'on'; savePref({ reduceMotion: el.checked }); });
 action('set-spoiler', (el) => { savePref({ spoilerMode: el.value }); toast('Modo de spoilers atualizado.', 'ok'); });

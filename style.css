@@ -5,11 +5,11 @@
    Tudo abaixo (vidro, brilho, fundo, botões, barras) é derivado deles; ao trocar de série os números
    são animados e a interface inteira muda de cor suavemente.
    ============================================================ */
-@property --h  { syntax: '<number>'; inherits: true; initial-value: 255; }
-@property --s  { syntax: '<number>'; inherits: true; initial-value: 42; }
-@property --h2 { syntax: '<number>'; inherits: true; initial-value: 35; }
-@property --a  { syntax: '<number>'; inherits: true; initial-value: 82; }
-:root { --h: 255; --s: 42; --h2: 35; --a: 82; --fs: 1; --radius: 22px; --radius-sm: 14px; --maxw: 1120px; --blur: blur(22px) saturate(165%);
+@property --h  { syntax: '<number>'; inherits: true; initial-value: 222; }
+@property --s  { syntax: '<number>'; inherits: true; initial-value: 72; }
+@property --h2 { syntax: '<number>'; inherits: true; initial-value: 212; }
+@property --a  { syntax: '<number>'; inherits: true; initial-value: 92; }
+:root { --gk: 1; --h: 222; --s: 72; --h2: 212; --a: 92; --gold: #ebac4d; --gold-soft: hsl(36 82% 62%);  --fs: 1; --radius: 22px; --radius-sm: 14px; --maxw: 1120px; --blur: blur(calc(9px + var(--gk) * 13px)) saturate(165%);
   --ease: cubic-bezier(.2,.8,.2,1);
   transition: --h .8s ease, --s .8s ease, --h2 .8s ease, --a .8s ease; }
 [data-mode="dark"] {
@@ -17,14 +17,14 @@
   --bg2: hsl(var(--h) calc(var(--s) * .45%) 10%);
   --card: hsl(var(--h) calc(var(--s) * .42%) 15%);
   --card2: hsl(var(--h) calc(var(--s) * .42%) 20%);
-  --glass: hsl(var(--h) calc(var(--s) * .45%) 17% / .62);
-  --glass2: hsl(var(--h) calc(var(--s) * .45%) 24% / .58);
-  --glass-strong: hsl(var(--h) calc(var(--s) * .5%) 9% / .78);
+  --glass: hsl(var(--h) calc(var(--s) * .45%) 17% / calc(.62 * var(--gk)));
+  --glass2: hsl(var(--h) calc(var(--s) * .45%) 24% / calc(.58 * var(--gk)));
+  --glass-strong: hsl(var(--h) calc(var(--s) * .5%) 9% / calc(.78 * var(--gk)));
   --inset: rgba(255,255,255,.07);
   --edge: rgba(255,255,255,.15); --edge-hi: rgba(255,255,255,.38);
   --sheen: linear-gradient(145deg, rgba(255,255,255,.15), rgba(255,255,255,.04) 34%, transparent 58%);
-  --fg: #f6f2ee; --muted: #c3bec9; --line: rgba(255,255,255,.14);
-  --accent: hsl(var(--h2) calc(var(--a) * 1%) 66%); --accent-fg: #170f08; --accent2: hsl(var(--h) 70% 76%);
+  --fg: #eef2f8; --muted: #b7c1d0; --line: rgba(255,255,255,.14);
+  --accent: hsl(var(--h2) calc(var(--a) * 1%) 66%); --accent-fg: #08101e; --accent2: hsl(var(--h) 70% 76%);
   --ok: #78dba3; --warn: #f3c36b; --bad: #ff98a0;
   --shadow: 0 18px 48px rgba(0,0,0,.42), 0 2px 8px rgba(0,0,0,.28);
   --aurora-a: .5; --aurora-b: .26;
@@ -34,11 +34,11 @@
   --bg: hsl(var(--h) calc(var(--s) * .5%) 93%);
   --bg2: hsl(var(--h) calc(var(--s) * .5%) 90%);
   --card: #ffffff; --card2: hsl(var(--h) calc(var(--s) * .5%) 94%);
-  --glass: rgba(255,255,255,.66); --glass2: rgba(255,255,255,.55); --glass-strong: rgba(255,255,255,.80);
+  --glass: rgba(255,255,255,calc(.66 * var(--gk))); --glass2: rgba(255,255,255,calc(.55 * var(--gk))); --glass-strong: rgba(255,255,255,calc(.80 * var(--gk)));
   --inset: rgba(255,255,255,.9);
   --edge: rgba(255,255,255,.85); --edge-hi: #ffffff;
   --sheen: linear-gradient(145deg, rgba(255,255,255,.9), rgba(255,255,255,.2) 40%, transparent 62%);
-  --fg: #1b1722; --muted: #5a5565; --line: hsl(var(--h) calc(var(--s) * .4%) 40% / .22);
+  --fg: #101828; --muted: #4f5a6e; --line: hsl(var(--h) calc(var(--s) * .4%) 40% / .22);
   --accent: hsl(var(--h2) calc(var(--a) * .9%) 34%); --accent-fg: #ffffff; --accent2: hsl(var(--h) 55% 36%);
   --ok: #17794a; --warn: #8a5a00; --bad: #b3202e;
   --shadow: 0 16px 40px hsl(var(--h) 40% 30% / .16), 0 1px 4px hsl(var(--h) 40% 30% / .12);
@@ -78,9 +78,6 @@ body::before { content: ""; position: fixed; inset: 0; z-index: -1; pointer-even
 [data-motion="off"] *, [data-motion="off"] *::before { animation: none !important; transition: none !important; }
 
 /* Estrutura */
-.logo { display: flex; align-items: center; gap: 10px; font-family: Georgia, serif; font-weight: 700; letter-spacing: .08em; text-decoration: none; color: var(--fg); font-size: 1.05rem; }
-.logo b { color: var(--accent); }
-.logo .mark { width: 30px; height: 30px; border-radius: 9px; background: linear-gradient(135deg, var(--accent), hsl(var(--h) 70% 55%)); display: grid; place-items: center; color: var(--accent-fg); }
 .topnav { display: flex; gap: 4px; margin-left: auto; flex-wrap: wrap; }
 .topnav a, .iconbtn { color: var(--fg); text-decoration: none; padding: 8px 12px; border-radius: 10px; border: 0; background: none; cursor: pointer; font: inherit; display: inline-flex; gap: 8px; align-items: center; min-height: 40px; }
 .topnav a:hover, .topnav a[aria-current="page"], .iconbtn:hover { background: var(--card2); }
@@ -215,7 +212,6 @@ a.card:hover, .card.hoverable:hover { transform: translateY(-3px); }
 
 /* Barra superior flutuante */
 .topbar { position: sticky; top: 10px; z-index: 20; display: flex; align-items: center; gap: 14px; margin: 10px auto 0; width: min(calc(100% - 24px), var(--maxw)); padding: 8px 12px 8px 14px; border-radius: 24px; background: var(--sheen), var(--glass-strong); }
-.logo .mark { box-shadow: 0 4px 14px hsl(var(--h2) calc(var(--a) * 1%) 50% / .45), inset 0 1px 0 rgba(255,255,255,.5); background: linear-gradient(145deg, hsl(var(--h2) calc(var(--a) * 1%) 70%), hsl(var(--h) 65% 50%)); }
 .topnav a, .iconbtn { border-radius: 14px; transition: background .25s, transform .15s; }
 .topnav a:hover, .topnav a[aria-current="page"], .iconbtn:hover { background: var(--glass2); box-shadow: inset 0 1px 0 var(--edge); }
 .topnav a[aria-current="page"] { color: var(--accent); }
@@ -307,7 +303,7 @@ select option { color: #1b1722; }
 
 /* Celular */
 @media (max-width: 760px) {
-  :root { --blur: blur(16px) saturate(160%); --radius: 20px; }
+  :root { --blur: blur(calc(7px + var(--gk) * 9px)) saturate(160%); --radius: 20px; }
   .topbar { top: 8px; margin-top: 8px; width: calc(100% - 20px); border-radius: 22px; }
   .tabbar { display: flex; }
   .secnav { top: 66px; }
@@ -325,3 +321,95 @@ select option { color: #1b1722; }
 @media (prefers-reduced-motion: reduce) { body::after, .btn.big.primary { animation: none !important; } }
 [data-motion="off"] body::after, [data-motion="off"] .btn.big.primary { animation: none !important; }
 [data-mode="light"] .hero-bg { opacity: .38; }
+
+/* ============================================================
+   IDENTIDADE SERIESVERSE AI — marca extraída da imagem de referência (símbolo de vidro azul/dourado,
+   tipografia prata + "AI" dourado). A marca é igual em todas as telas; o brilho ao redor acompanha a série.
+   ============================================================ */
+.logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--fg); min-height: 44px; padding: 2px 8px 2px 4px; border-radius: 16px; }
+.logo .mark { display: grid; place-items: center; transition: transform .3s var(--ease); }
+.logo .logomark { height: 40px; width: auto; display: block; margin: -2px 0 -6px; filter: drop-shadow(0 0 12px hsl(var(--h2) calc(var(--a) * 1%) 58% / .28)); }
+.logo .logoword { height: 15px; width: auto; display: block; }
+.logo:hover .mark { transform: scale(1.05); }
+.lockup { --lk: clamp(84px, 14vw, 140px); display: flex; align-items: center; gap: clamp(4px, 1.4vw, 14px); margin: -6px 0 24px -10px; }
+.lockup-mark { flex: none; height: var(--lk); width: auto; filter: drop-shadow(0 0 26px hsl(var(--h2) calc(var(--a) * 1%) 58% / .26)); }
+.lockup-text { flex: 0 1 auto; min-width: 0; width: calc(var(--lk) * 2.75); max-width: calc(100vw - var(--lk) - 80px); height: auto; margin-top: -4px; }
+/* Modo claro: a marca prateada precisa de um fundo escuro para manter a leitura e a fidelidade */
+[data-mode="light"] .logo, [data-mode="light"] .lockup { background: linear-gradient(145deg, #050c1c, #0b1a36); box-shadow: inset 0 1px 0 rgba(255,255,255,.18), 0 6px 18px rgba(5,12,28,.28); }
+[data-mode="light"] .lockup { padding: 12px 18px; border-radius: 22px; margin: 0 0 22px; }
+@media (max-width: 760px) { .logo .logoword { height: 13px; } .logo .logomark { height: 36px; } }
+
+/* Tema padrão (sem série): fundo preto/azul-marinho, azul interativo, dourado só em pequenos detalhes */
+[data-motif="none"][data-mode="dark"] body::after {
+  background:
+    radial-gradient(46% 42% at 0% 0%, rgba(14,62,138,.62), transparent 72%),
+    radial-gradient(38% 34% at 100% 100%, rgba(176,98,32,.42), transparent 72%),
+    radial-gradient(60% 50% at 40% 112%, rgba(8,22,52,.7), transparent 72%); }
+[data-motif="none"][data-mode="light"] body::after {
+  background:
+    radial-gradient(42% 38% at 8% 6%, hsl(212 85% 70% / .5), transparent 72%),
+    radial-gradient(34% 30% at 100% 100%, hsl(36 90% 68% / .35), transparent 72%); }
+[data-motif="none"] .kicker { color: var(--gold-soft); text-shadow: 0 0 18px hsl(41 80% 55% / .35); }
+[data-mode="light"][data-motif="none"] .kicker { color: #8a5a0c; text-shadow: none; }
+[data-motif="none"] .ach.on .ic { background: linear-gradient(180deg, #f8d58f, var(--gold)); color: #1a1205; }
+[data-motif="none"] .rsec > h2 .tag { background: linear-gradient(180deg, #f8d58f, var(--gold)); }
+[data-motif="none"] .bar > i { background: linear-gradient(90deg, hsl(212 90% 56%), hsl(205 95% 70%) 78%, #f3c273); }
+main:focus, main:focus-visible { outline: none; }
+
+/* ============================================================
+   SENSAÇÃO DE iPHONE: vidro ajustável, toque com mola, brilho que segue o dedo,
+   interruptores e controles deslizantes no estilo iOS
+   ============================================================ */
+:root { --spring: cubic-bezier(.34, 1.56, .64, 1); }
+html { -webkit-tap-highlight-color: transparent; }
+a, button, input, select, label { touch-action: manipulation; }
+/* texto continua legível quando o vidro fica muito transparente */
+[data-mode="dark"] .card, [data-mode="dark"] .hero, [data-mode="dark"] .tabbar, [data-mode="dark"] .topbar { text-shadow: 0 1px 10px rgba(0,0,0,calc((1.05 - var(--gk)) * .55)); }
+[data-mode="light"] .card, [data-mode="light"] .hero { text-shadow: 0 1px 8px rgba(255,255,255,calc((1.05 - var(--gk)) * .7)); }
+/* barra superior fica mais firme ao rolar (como a barra de navegação do iOS) */
+.topbar { transition: background .35s ease, box-shadow .35s ease; }
+[data-scrolled="1"] .topbar { background: var(--sheen), hsl(var(--h) calc(var(--s) * .5%) 8% / calc(.9 * var(--gk) + .08)); }
+[data-scrolled="1"][data-mode="light"] .topbar { background: var(--sheen), rgba(255,255,255,calc(.88 * var(--gk) + .06)); }
+
+/* Toque com efeito de mola */
+.btn, .iconbtn, .topnav a, .tabbar a, .scard { transition: transform .5s var(--spring), box-shadow .25s, filter .2s, background .25s; }
+.btn:active, .iconbtn:active, .topnav a:active, .tabbar a:active { transform: scale(.94); transition-duration: .12s; }
+.btn.big:active { transform: scale(.975); }
+.scard:active { transform: scale(.965); transition-duration: .12s; }
+.tabbar a[aria-current="page"] { animation: bubble .55s var(--spring) both; }
+@keyframes bubble { from { transform: scale(.82); } to { transform: none; } }
+.toast { animation: toastIn .5s var(--spring) both; }
+@keyframes toastIn { from { opacity: 0; transform: translateY(18px) scale(.92); } to { opacity: 1; transform: none; } }
+
+/* Brilho que acompanha o dedo (posição vem de fx.js) */
+.btn, .iconbtn, .topnav a, .tabbar a { position: relative; overflow: hidden; isolation: isolate; }
+.btn::after, .iconbtn::after, .topnav a::after, .tabbar a::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; z-index: -1; transition: opacity .45s ease;
+  background: radial-gradient(circle at var(--px, 50%) var(--py, 50%), rgba(255,255,255,.62), rgba(255,255,255,.16) 36%, transparent 64%); }
+.pressing::after { opacity: 1 !important; transition-duration: .08s !important; }
+[data-touchfx="off"] .btn::after, [data-touchfx="off"] .iconbtn::after, [data-touchfx="off"] .topnav a::after, [data-touchfx="off"] .tabbar a::after { display: none; }
+
+/* Interruptor (switch) no estilo iOS */
+.switch-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; font-weight: 500; margin: 0; padding: 6px 0; cursor: pointer; }
+input[type="checkbox"] { -webkit-appearance: none; appearance: none; flex: none; position: relative; width: 51px !important; height: 31px !important; min-height: 31px !important; padding: 0 !important; border-radius: 99px; cursor: pointer;
+  background: rgba(120,120,140,.42); border: 1px solid var(--edge); box-shadow: inset 0 2px 6px rgba(0,0,0,.3); transition: background .3s ease; }
+input[type="checkbox"]::before { content: ""; position: absolute; top: 2px; left: 2px; width: 25px; height: 25px; border-radius: 50%; background: linear-gradient(180deg, #fff, #e8edf5); box-shadow: 0 3px 8px rgba(0,0,0,.35), inset 0 -1px 0 rgba(0,0,0,.08); transition: transform .45s var(--spring), width .2s; }
+input[type="checkbox"]:active::before { width: 30px; }
+input[type="checkbox"]:checked { background: linear-gradient(180deg, hsl(var(--h2) calc(var(--a) * 1%) 62%), hsl(var(--h2) calc(var(--a) * 1%) 50%)); border-color: hsl(var(--h2) calc(var(--a) * 1%) 70% / .6); }
+input[type="checkbox"]:checked::before { transform: translateX(20px); }
+input[type="checkbox"]:checked:active::before { transform: translateX(15px); }
+
+/* Controle deslizante estilo iOS */
+input[type="range"] { -webkit-appearance: none; appearance: none; height: 30px; min-height: 30px; padding: 0; background: transparent; border: 0; box-shadow: none; }
+input[type="range"]::-webkit-slider-runnable-track { height: 7px; border-radius: 99px; background: linear-gradient(90deg, hsl(var(--h2) calc(var(--a) * 1%) 60%) var(--fill, 50%), rgba(140,150,170,.4) var(--fill, 50%)); box-shadow: inset 0 1px 3px rgba(0,0,0,.4); }
+input[type="range"]::-moz-range-track { height: 7px; border-radius: 99px; background: rgba(140,150,170,.4); }
+input[type="range"]::-moz-range-progress { height: 7px; border-radius: 99px; background: hsl(var(--h2) calc(var(--a) * 1%) 60%); }
+input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 30px; height: 30px; margin-top: -11.5px; border-radius: 50%; background: linear-gradient(180deg, #ffffff, #e4eaf4); border: 1px solid rgba(255,255,255,.9); box-shadow: 0 4px 12px rgba(0,0,0,.4); transition: transform .35s var(--spring); }
+input[type="range"]::-moz-range-thumb { width: 28px; height: 28px; border-radius: 50%; background: #fff; border: 1px solid rgba(255,255,255,.9); box-shadow: 0 4px 12px rgba(0,0,0,.4); }
+input[type="range"]:active::-webkit-slider-thumb { transform: scale(1.18); }
+input[type="range"]:focus { box-shadow: none; }
+input[type="range"]:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+.range-ends { display: flex; justify-content: space-between; margin-top: 2px; }
+.seg { display: flex; gap: 6px; padding: 4px; border-radius: 18px; background: rgba(0,0,0,.22); border: 1px solid var(--edge); }
+.seg .btn { flex: 1; box-shadow: none; border-radius: 14px; background: transparent; border-color: transparent; }
+.seg .btn:hover { background: var(--glass2); }
+@media (prefers-reduced-motion: reduce) { .tabbar a[aria-current="page"], .toast { animation: none !important; } }

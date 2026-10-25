@@ -1,5 +1,5 @@
 // Núcleo da SPA: roteador, renderização, ações por delegação de eventos, toasts e tela de erro.
-import { $, $$, esc, get, icon, themeFor, applyTheme, BRAND, ApiError, put } from './lib.js';
+import { $, $$, esc, get, icon, logoMark, wordmark, themeFor, applyTheme, BRAND, ApiError, put } from './lib.js';
 
 export const state = { prefs: { theme: 'dark', spoilerMode: 'restricted', fontScale: 1, reduceMotion: false, onboarded: false }, providers: {}, ctx: {} };
 const routes = [];
@@ -45,7 +45,7 @@ export function renderChrome() {
   const cur = location.hash.split('?')[0];
   const items = [['#/', 'home', 'Início'], ['#/search', 'search', 'Buscar'], ['#/library', 'library', 'Biblioteca'], ['#/dashboard', 'chart', 'Painel'], ['#/settings', 'settings', 'Ajustes']];
   const cls = (h) => (cur === h || (h !== '#/' && cur.startsWith(h)) ? ' aria-current="page"' : '');
-  $('#topbar').innerHTML = `<a class="logo" href="#/" aria-label="SERIESVERSE AI — início"><span class="mark">${icon('play')}</span><span>SERIES<b>VERSE</b> AI</span></a>
+  $('#topbar').innerHTML = `<a class="logo" href="#/" aria-label="SERIESVERSE AI — início"><span class="mark">${logoMark(34)}</span><span class="word">${wordmark()}</span></a>
     <nav class="topnav" aria-label="Principal">${items.map(([h, i, l]) => `<a href="${h}"${cls(h)}>${icon(i)} ${l}</a>`).join('')}<a href="#/profile"${cls('#/profile')}>${icon('user')} Perfil</a></nav>
     <button class="iconbtn theme" data-act="toggle-theme" aria-label="Alternar tema claro/escuro">${icon(state.prefs.theme === 'light' ? 'moon' : 'sun')}</button>`;
   $('#tabbar').innerHTML = items.map(([h, i, l]) => `<a href="${h}"${cls(h)}>${icon(i)}<span>${l}</span></a>`).join('');
